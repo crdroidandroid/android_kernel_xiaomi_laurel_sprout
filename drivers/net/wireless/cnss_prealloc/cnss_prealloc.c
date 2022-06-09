@@ -38,7 +38,7 @@ struct wcnss_prealloc {
 	void *ptr;
 #ifdef CONFIG_SLUB_DEBUG
 	unsigned long stack_trace[WCNSS_MAX_STACK_TRACE];
-	struct stack_trace trace;
+	struct stack_trace *trace = NULL;
 #endif
 };
 
@@ -271,7 +271,8 @@ void wcnss_prealloc_check_memory_leak(void)
 
 		pr_err("Size: %zu, addr: %pK, backtrace:\n",
 		       wcnss_allocs[i].size, wcnss_allocs[i].ptr);
-		print_stack_trace(&wcnss_allocs[i].trace, 1);
+		trace = &wcnss_allocs[i].trace;
+		stack_trace_print(trace->entries, trace->nr_entries, 1);
 	}
 }
 #else
